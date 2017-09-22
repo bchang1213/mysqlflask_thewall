@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Success</title>
+	<style media='screen'>
+	li.error{
+		color: red ;
+	}
+
+	li.success{
+		color:green;
+	}
+	</style>
+</head>
+<body>
+	<header>
+		<h4>CodingDojo Wall</h4>
+		<p>Welcome {{ users['first_name']}}</p>
+		<a href="/logout"><button>Logout</button></a>
+	</header>
+	<div class="container">
+<!-- Flash Messaging with categories: -->
+		{% with messages = get_flashed_messages(with_categories=true) %}
+		{% if messages %}
+
+		<ul class=flashes>
+		{% for category, message in messages %}
+			<li class="{{ category }}">{{ message }}</li>
+		{% endfor %}
+		</ul>
+
+		{% endif %}
+		{% endwith %}
+<!-- Post a message to the wall area -->
+		<fieldset>
+		<legend>Post a message</legend>
+		<form  class ="message_form" action="/messages" method="POST">
+			<textarea name="message"></textarea>
+			<input type="submit" name="post_message">
+		</form>
+		</fieldset>
+<!-- All the posts -->
+		{% for post in wallposts %}
+			{{ post.messageid }}
+		<fieldset>
+			<!-- MESSAGE POSTED -->
+			<legend>{{ post.user_name }}- {{ post.created_on }}</legend>
+			<p>{{ post.message }}</p>
+
+			<!-- COMMENT POSTED -->
+			{% for commentpost in commentposts %}
+			{% if post.messageid == commentpost.message_id %}
+			<fieldset>
+				<legend>{{ commentpost.user_name }}- {{ commentpost.created_at }}</legend>
+				<p>{{ commentpost.comment }}</p>
+			</fieldset>
+			{% endif %}
+			{% endfor %}
+			
+			<!-- COMMENT POSTING FORM -->
+			<form action="/comments/{{ post.messageid }}" class="comment_form" method="POST">
+				<textarea name="comment">Post a comment...</textarea>
+				<input type="submit" name="post_comment">
+			</form>
+		</fieldset>
+		{% endfor %}
+
+
+
+
+
+
+
+
+	</div>
+</body>
+</html>
